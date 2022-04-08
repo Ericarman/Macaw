@@ -1407,7 +1407,7 @@ open class SVGParser {
             }
         }
 
-        return UserSpaceNode(node: Group(contents: nodes), userSpace: userSpace)
+        return UserSpaceNode(node: Group(contents: nodes, allAttributes: element.allAttributes), userSpace: userSpace)
     }
 
     fileprivate func parseEffect(_ filterNode: XMLIndexer) throws -> Effect? {

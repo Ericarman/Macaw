@@ -13,7 +13,7 @@ class SVGCanvas: Group {
 
     public init(layout: NodeLayout, contents: [Node] = [], allAttributes: [String: XMLAttribute]) {
         self.layout = layout
-        super.init(contents: contents)
+        super.init(contents: contents, allAttributes: allAttributes)
     }
 
     public func layout(size: Size) -> Size {

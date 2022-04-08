@@ -9,13 +9,12 @@
 import UIKit
 import Macaw
 
-final class SVGViewController: UIViewController {
-    @IBOutlet private var svgView: SVGView!
-    
+final class SVGViewController: UIViewController {    
+    @IBOutlet var svgView: SVGView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(svgView.node.allAttributes)
         print(svgView.node)
+        print(svgView.node.allAttributes)
         
         let group = svgView.node as! Group
         let imageNodes = group.nodesBy { node in
