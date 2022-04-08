@@ -150,7 +150,7 @@ open class SVGParser {
         }
         let layout = try svgElement.flatMap(parseViewBox)
         try parseSvg(parsedXml.children)
-        let root = layout.flatMap { SVGCanvas(layout: $0, contents: nodes) } ?? Group(contents: nodes)
+        let root = layout.flatMap { SVGCanvas(layout: $0, contents: nodes, allAttributes: svgElement?.allAttributes ?? [:]) } ?? Group(contents: nodes, allAttributes: svgElement?.allAttributes ?? [:])
         if let opacity = svgElement?.attribute(by: "opacity") {
             root.opacity = getOpacity(opacity.text)
         }
@@ -312,7 +312,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: path),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "line":
@@ -326,7 +327,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: line),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "rect":
@@ -340,7 +342,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: rect),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "circle":
@@ -354,7 +357,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: circle),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "ellipse":
@@ -368,7 +372,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: ellipse),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "polygon":
@@ -382,7 +387,8 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: polygon),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "polyline":
@@ -396,11 +402,14 @@ open class SVGParser {
                                  opacity: getOpacity(style),
                                  clip: getClipPath(style, locus: polyline),
                                  mask: mask,
-                                 tag: getTag(element))
+                                 tag: getTag(element),
+                                 allAttributes: element.allAttributes)
                 }
             }
         case "image":
-            return parseImage(node, opacity: getOpacity(style), pos: position, clip: getClipPath(style, locus: nil))
+            return parseImage(node, opacity: getOpacity(style),
+                              pos: position,
+                              clip: getClipPath(style, locus: nil))
         case "text":
             return parseText(node,
                              textAnchor: getTextAnchor(style),
@@ -480,7 +489,7 @@ open class SVGParser {
                         shapes.append(shape)
                     }
                 }
-                return Group(contents: shapes)
+                return Group(contents: shapes, allAttributes: pattern.element?.allAttributes ?? [:])
             }
         }
 
@@ -505,7 +514,7 @@ open class SVGParser {
                 groupNodes.append(node)
             }
         }
-        return Group(contents: groupNodes, place: getPosition(element), tag: getTag(element))
+        return Group(contents: groupNodes, place: getPosition(element), tag: getTag(element), allAttributes: element.allAttributes)
     }
 
     fileprivate func getPosition(_ element: XMLHash.XMLElement) -> Transform {
@@ -1041,7 +1050,8 @@ open class SVGParser {
                      h: getIntValue(element, attribute: "height") ?? 0,
                      place: position,
                      clip: clip,
-                     tag: getTag(element))
+                     tag: getTag(element),
+                     allAttributes: element.allAttributes)
     }
 
     fileprivate func parseText(_ text: XMLIndexer,
@@ -1078,7 +1088,7 @@ open class SVGParser {
                                                 fontSize: fontSize,
                                                 fontWeight: fontWeight,
                                                 bounds: rect)
-            return Group(contents: collectedTspans, place: pos, tag: getTag(element))
+            return Group(contents: collectedTspans, place: pos, tag: getTag(element), allAttributes: element.allAttributes)
         }
     }
 
@@ -1114,7 +1124,8 @@ open class SVGParser {
                     baseline: .bottom,
                     place: position,
                     opacity: opacity,
-                    tag: getTag(text))
+                    tag: getTag(text),
+                    allAttributes: text.allAttributes)
     }
 
     // REFACTOR
@@ -1241,7 +1252,8 @@ open class SVGParser {
                     baseline: .alphabetic,
                     place: pos,
                     opacity: getOpacity(attributes),
-                    tag: getTag(element))
+                    tag: getTag(element),
+                    allAttributes: element.allAttributes)
     }
 
     fileprivate func getFont(_ attributes: [String: String] = [:],
@@ -1866,7 +1878,8 @@ open class SVGParser {
                          opaque: opaque,
                          clip: clip,
                          visible: visible,
-                         tag: tag)
+                         tag: tag,
+                         allAttributes: shape.allAttributes)
         }
         if let text = referenceNode as? Text {
             return Text(text: text.text,
@@ -1879,7 +1892,8 @@ open class SVGParser {
                         opaque: opaque,
                         clip: clip,
                         visible: visible,
-                        tag: tag)
+                        tag: tag,
+                        allAttributes: text.allAttributes)
         }
         if let image = referenceNode as? Image {
             return Image(src: image.src,
@@ -1892,7 +1906,8 @@ open class SVGParser {
                          opaque: opaque,
                          clip: clip,
                          visible: visible,
-                         tag: tag)
+                         tag: tag,
+                         allAttributes: image.allAttributes)
         }
         if let group = referenceNode as? Group {
             var contents = [Node]()
@@ -1901,7 +1916,7 @@ open class SVGParser {
                     contents.append(copy)
                 }
             }
-            return Group(contents: contents, place: pos, opaque: opaque, clip: clip, visible: visible, tag: tag)
+            return Group(contents: contents, place: pos, opaque: opaque, clip: clip, visible: visible, tag: tag, allAttributes: group.allAttributes)
         }
         return .none
     }

@@ -1,3 +1,5 @@
+import SWXMLHash
+
 open class Group: Node {
 
     open var contentsVar: AnimatableVariable<[Node]>
@@ -8,7 +10,7 @@ open class Group: Node {
         }
     }
 
-    public init(contents: [Node] = [], place: Transform = Transform.identity, opaque: Bool = true, opacity: Double = 1, clip: Locus? = nil, mask: Node? = nil, effect: Effect? = nil, visible: Bool = true, tag: [String] = []) {
+    public init(contents: [Node] = [], place: Transform = Transform.identity, opaque: Bool = true, opacity: Double = 1, clip: Locus? = nil, mask: Node? = nil, effect: Effect? = nil, visible: Bool = true, tag: [String] = [], allAttributes: [String: XMLAttribute] = [:]) {
         self.contentsVar = AnimatableVariable<[Node]>(contents)
         super.init(
             place: place,
@@ -18,7 +20,8 @@ open class Group: Node {
             mask: mask,
             effect: effect,
             visible: visible,
-            tag: tag
+            tag: tag,
+            allAttributes: allAttributes
         )
 
         self.contents = contents

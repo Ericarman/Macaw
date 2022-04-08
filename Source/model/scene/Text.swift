@@ -3,6 +3,7 @@ import UIKit
 #elseif os(OSX)
 import AppKit
 #endif
+import SWXMLHash
 
 open class Text: Node {
 
@@ -48,7 +49,7 @@ open class Text: Node {
         set(val) { kerningVar.value = val }
     }
 
-    public init(text: String, font: Font? = nil, fill: Fill? = Color.black, stroke: Stroke? = nil, align: Align = .min, baseline: Baseline = .top, kerning: Float = 0.0, place: Transform = Transform.identity, opaque: Bool = true, opacity: Double = 1, clip: Locus? = nil, mask: Node? = nil, effect: Effect? = nil, visible: Bool = true, tag: [String] = []) {
+    public init(text: String, font: Font? = nil, fill: Fill? = Color.black, stroke: Stroke? = nil, align: Align = .min, baseline: Baseline = .top, kerning: Float = 0.0, place: Transform = Transform.identity, opaque: Bool = true, opacity: Double = 1, clip: Locus? = nil, mask: Node? = nil, effect: Effect? = nil, visible: Bool = true, tag: [String] = [], allAttributes: [String: XMLAttribute] = [:]) {
         self.textVar = Variable<String>(text)
         self.fontVar = Variable<Font?>(font)
         self.fillVar = Variable<Fill?>(fill)
@@ -64,7 +65,8 @@ open class Text: Node {
             mask: mask,
             effect: effect,
             visible: visible,
-            tag: tag
+            tag: tag,
+            allAttributes: allAttributes
         )
     }
 

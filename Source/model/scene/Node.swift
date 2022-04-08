@@ -1,6 +1,8 @@
 import Foundation
+import SWXMLHash
 
 open class Node: Drawable {
+    public let allAttributes: [String: XMLAttribute]
 
     public let placeVar: AnimatableVariable<Transform>
     open var place: Transform {
@@ -296,13 +298,22 @@ open class Node: Drawable {
         return !pinchHandlers.isEmpty
     }
 
-    public init(place: Transform = Transform.identity, opaque: Bool = true, opacity: Double = 1, clip: Locus? = nil, mask: Node? = nil, effect: Effect? = nil, visible: Bool = true, tag: [String] = []) {
+    public init(place: Transform = Transform.identity,
+                opaque: Bool = true,
+                opacity: Double = 1,
+                clip: Locus? = nil,
+                mask: Node? = nil,
+                effect: Effect? = nil,
+                visible: Bool = true,
+                tag: [String] = [],
+                allAttributes: [String: XMLAttribute]) {
         self.placeVar = AnimatableVariable<Transform>(place)
         self.opaqueVar = Variable<Bool>(opaque)
         self.opacityVar = AnimatableVariable<Double>(opacity)
         self.clipVar = Variable<Locus?>(clip)
         self.maskVar = Variable<Node?>(mask)
         self.effectVar = Variable<Effect?>(effect)
+        self.allAttributes = allAttributes
 
         super.init(
             visible: visible,

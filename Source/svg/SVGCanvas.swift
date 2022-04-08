@@ -5,11 +5,13 @@
 //  Created by Yuri Strot on 4/11/18.
 //
 
+import SWXMLHash
+
 class SVGCanvas: Group {
 
     let layout: NodeLayout
 
-    public init(layout: NodeLayout, contents: [Node] = []) {
+    public init(layout: NodeLayout, contents: [Node] = [], allAttributes: [String: XMLAttribute]) {
         self.layout = layout
         super.init(contents: contents)
     }
