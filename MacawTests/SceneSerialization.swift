@@ -101,7 +101,7 @@ class NodeSerializer {
             for dict in contents {
                 nodes.append(self.instance(dictionary: dict))
             }
-            return SVGCanvas(layout: layout, contents: nodes)
+            return SVGCanvas(layout: layout, contents: nodes, allAttributes: [:])
         }
     }
     

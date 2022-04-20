@@ -1,5 +1,6 @@
 import Foundation
 
+@objc(MDrawable)
 open class Drawable: NSObject {
 
     public let visible: Bool
